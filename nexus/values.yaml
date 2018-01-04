@@ -1,0 +1,6 @@
+namespace: default
+nexus:
+  image:
+    name: fabric8/nexus
+    tag: vee72dc8
+    pullPolicy: IfNotPresent
