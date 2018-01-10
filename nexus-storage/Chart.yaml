@@ -1,0 +1,13 @@
+apiVersion: v1
+name: nexus-storage
+description: Chart that deploys PV and PVC for use with Nexus chart 
+version: 1.0.0
+keywords:
+  - nexus
+  - pvc
+  - pv
+  - kubernetes
+home: https://github.com/stakater/chart-nexus
+maintainers:
+- name: Stakater
+  email: stakater@aurorasolutions.io
