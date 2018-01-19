@@ -9,5 +9,5 @@ spec:
     - ReadWriteOnce
   nfs:
     # Create this first!
-    server: {{ .Values.efs.server }}
+    server: {{ .Values.nexusStorage.efs.server }}
     path: "/nexus-storage"
