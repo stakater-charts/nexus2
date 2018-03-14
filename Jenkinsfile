@@ -6,49 +6,32 @@ String nexusStoragePackageName = ""
 String nexusChartName = "nexus"
 String nexusStorageChartName = "nexus-storage"
 
-clientsNode(clientsImage: 'stakater/kops-ansible:helm-bundle') {
-    container(name: 'clients') {
+toolsNode(toolsImage: 'stakater/pipeline-tools:dev') {
+    container(name: 'tools') {
+        def helm = new io.stakater.charts.Helm()
+        def common = new io.stakater.Common()
+        def chartManager = new io.stakater.charts.ChartManager()
         stage('Checkout') {
             checkout scm
         }
         
         stage('Init Helm') {
-            sh "helm init --client-only"
+            helm.init(true)
         }
 
         stage('Prepare Chart') {
-            nexusPackageName = prepareChart(nexusChartName)
-            nexusStoragePackageName = prepareChart(nexusStorageChartName)
+            helm.lint(WORKSPACE, nexusChartName)
+            nexusPackageName = helm.package(WORKSPACE, nexusChartName)
+
+            helm.lint(WORKSPACE, nexusStorageChartName)
+            nexusStoragePackageName = helm.package(WORKSPACE, nexusStorageChartName)
         }
 
         stage('Upload Chart') {
-            uploadChart(nexusChartName, nexusPackageName)
-            uploadChart(nexusStorageChartName, nexusStoragePackageName)
+            String cmUsername = common.getEnvValue('CHARTMUSEUM_USERNAME')
+            String cmPassword = common.getEnvValue('CHARTMUSEUM_PASSWORD')
+            chartManager.uploadToChartMuseum(WORKSPACE, nexusChartName, nexusPackageName, cmUsername, cmPassword)
+            chartManager.uploadToChartMuseum(WORKSPACE, nexusStorageChartName, nexusStoragePackageName, cmUsername, cmPassword)
         }
     }
-}
-
-def prepareChart(String chartName) {
-    result = shOutput """
-                cd ${WORKSPACE}/${chartName}
-                helm lint
-                helm package .
-            """
-
-    return result.substring(result.lastIndexOf('/') + 1, result.length())
-}
-
-def uploadChart(String chartName, String fileName) {
-    sh """
-        cd ${WORKSPACE}/${chartName}
-        curl -L --data-binary \"@${fileName}\" http://chartmuseum/api/charts
-    """
-}
-
-def shOutput(String command) {
-    return sh(
-        script: """
-            ${command}
-        """,
-        returnStdout: true).trim()
 }
