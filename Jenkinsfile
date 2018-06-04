@@ -3,8 +3,8 @@
 
 String nexusPackageName = ""
 String nexusStoragePackageName = ""
-String nexusChartName = "nexus"
-String nexusStorageChartName = "nexus-storage"
+String nexusChartName = "nexus2"
+String nexusStorageChartName = "nexus2-storage"
 
 toolsNode(toolsImage: 'stakater/pipeline-tools:dev') {
     container(name: 'tools') {
@@ -14,7 +14,7 @@ toolsNode(toolsImage: 'stakater/pipeline-tools:dev') {
         stage('Checkout') {
             checkout scm
         }
-        
+
         stage('Init Helm') {
             helm.init(true)
         }
