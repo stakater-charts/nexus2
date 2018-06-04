@@ -10,10 +10,10 @@ items:
       heritage: {{ .Release.Service | quote }}
       release: {{ .Release.Name | quote }}
       provider: fabric8
-      project: nexus-app
+      project: nexus2-app
       version: 1.0.1
       group: io.fabric8.apps
-    name: nexus-storage
+    name: {{ template "name" . }}
   spec:
     accessModes:
     - ReadWriteOnce

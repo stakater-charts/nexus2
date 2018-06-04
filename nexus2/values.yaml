@@ -1,10 +1,10 @@
 kubernetes:
   host: https://kubernetes.default
 
-nexus:
+nexus2:
   namespace: default
   image:
-    name: fabric8/nexus
+    name: fabric8/nexus2
     tag: vee72dc8
     pullPolicy: IfNotPresent
   service:

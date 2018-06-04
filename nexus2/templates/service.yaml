@@ -8,7 +8,7 @@ items:
     annotations:
       fabric8.io/ingress.annotations: |-
         ingress.kubernetes.io/force-ssl-redirect: true
-        kubernetes.io/ingress.class: {{ .Values.nexus.service.ingressClass }}
+        kubernetes.io/ingress.class: {{ .Values.nexus2.service.ingressClass }}
     labels:
       expose: "true"
       provider: fabric8
@@ -18,7 +18,7 @@ items:
       heritage: {{ .Release.Service | quote }}
       version: 1.0.1
       group: io.fabric8.apps
-    name: nexus
+    name: {{ template "name" . }}
   spec:
     ports:
     - port: 80

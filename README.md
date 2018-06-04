@@ -6,10 +6,10 @@ This repository contains 2 charts that are used to deploy nexus to kubernetes.
 ## Installing
 First install `nexus-storage` chart
 ```
-helm install --name nexus-storage chartmuseum/nexus-storage
+helm install --name nexus2-storage chartmuseum/nexus2-storage
 ```
 
 After that, install `nexus` chart
 ```
-helm install --name nexus chartmuseum/nexus
+helm install --name nexus2 chartmuseum/nexus2
 ```
