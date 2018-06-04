@@ -1,0 +1,11 @@
+kubernetes:
+  host: https://kubernetes.default
+
+nexus2:
+  namespace: default
+  image:
+    name: fabric8/nexus2
+    tag: vee72dc8
+    pullPolicy: IfNotPresent
+  service:
+    ingressClass: internal-ingress

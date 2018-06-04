@@ -1,0 +1,67 @@
+---
+apiVersion: v1
+kind: List
+items:
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    labels:
+      provider: fabric8
+      app: {{ template "fullname" . }}
+      chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+      release: {{ .Release.Name | quote }}
+      heritage: {{ .Release.Service | quote }}
+      version: 1.0.1
+      group: io.fabric8.apps
+    name: {{ template "name" . }}
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: {{ template "fullname" . }}
+        provider: fabric8
+        group: io.fabric8.apps
+    template:
+      metadata:
+        annotations:
+          pod.alpha.kubernetes.io/init-containers: '[{"image":"busybox","imagePullPolicy":"IfNotPresent","name":"fmp-volume-permission","command":["chmod","777","/sonatype-work/storage"],"volumeMounts":[{"mountPath":"/sonatype-work/storage","name":"nexus-storage"}]}]'
+        labels:
+          provider: fabric8
+          app: {{ template "fullname" . }}
+          version: 1.0.1
+          group: io.fabric8.apps
+      spec:
+        containers:
+        - env:
+          - name: KUBERNETES_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          image: "{{ .Values.nexus2.image.name }}:{{ .Values.nexus2.image.tag }}"
+          imagePullPolicy: {{ .Values.nexus2.image.pullPolicy }}
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /content/repositories/
+              port: 8081
+            initialDelaySeconds: 1000
+            timeoutSeconds: 10
+          name: {{ template "name" . }}
+          ports:
+          - containerPort: 8081
+            name: http
+          readinessProbe:
+            failureThreshold: 10
+            httpGet:
+              path: /content/repositories/
+              port: 8081
+            initialDelaySeconds: 60
+            timeoutSeconds: 10
+          volumeMounts:
+          - mountPath: /sonatype-work/storage
+            name: {{ template "name" . }}-storage
+            readOnly: false
+        volumes:
+        - name: {{ template "name" . }}-storage
+          persistentVolumeClaim:
+            claimName: {{ template "name" . }}-storage
