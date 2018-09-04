@@ -7,7 +7,7 @@ keywords:
   - pvc
   - pv
   - kubernetes
-home: https://github.com/stakater/chart-nexus2
+home: https://github.com/stakater-charts/nexus2
 maintainers:
 - name: Stakater
   email: stakater@aurorasolutions.io
